@@ -1,4 +1,6 @@
+#:import Label kivy.uix.label.Label
 Root:
+    orientation: 'vertical'
     ActionBar:
         pos_hint: {'top':1}
         ActionView:
@@ -21,7 +23,30 @@ Root:
                 mode: 'spinner'
                 ActionButton:
                     text:'Edit data'
+    ScrollView:
+        size_hint: 1.0,0.7
+        size: (500, 500)
+        BoxLayout:
+            RecycleView:
+                viewclass: 'SelectableButton'
+                data: [{'text': str(x)} for x in root.data_items]
+                SelectableRecycleGridLayout:
+                    default_size: None, dp(26)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    cols: root.data_size
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    multiselect: True
+                    touch_multiselect: True
 
+<SelectableButton>:
+    canvas.before:
+        Color:
+            rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
 
 <LoadDialog>:
     BoxLayout:
@@ -30,7 +55,7 @@ Root:
         orientation: "vertical"
         FileChooserIconView:
             id: filechooser
-
+            filters: ['*.csv']
         BoxLayout:
             size_hint_y: None
             height: 30
