@@ -1,6 +1,7 @@
 #:import Label kivy.uix.label.Label
-Root:
-    orientation: 'vertical'
+<Menu>:
+    manager: screen_manager
+    orientation: "vertical"
     ActionBar:
         pos_hint: {'top':1}
         ActionView:
@@ -16,17 +17,46 @@ Root:
                     on_release: root.show_load()
                 ActionButton:
                     text:'Add Data'
+                    on_release: root.manager.current = "help"
                 ActionButton:
-                    text:'Save as png'  
+                    text:'Save as png' 
+                    on_release: root.show_plot() 
             ActionGroup:
                 text: 'Edit'
                 mode: 'spinner'
                 ActionButton:
                     text:'Edit data'
-    ScrollView:
-        size_hint: 1.0,0.7
-        size: (500, 500)
-        BoxLayout:
+                    on_release: app.root.manager.current = "edit"
+    Manager:
+        id: screen_manager
+
+<LoadData>:
+    BoxLayout:
+        orientation: 'vertical'
+        ScrollView:
+            size_hint: (1, 1)
+            do_scroll_x: True                                                      
+            do_scroll_y: True         
+            RecycleView:
+                viewclass: 'Label'
+                data: [{'text': str(x), 'color': (0, 0, 0, 1)} for x in root.data_items]
+                SelectableRecycleGridLayout:
+                    default_size: None, dp(26)
+                    default_size_hint: 1, None
+                    size_hint_y: None
+                    cols: root.data_size
+                    height: self.minimum_height
+                    orientation: 'vertical'
+                    multiselect: True
+                    touch_multiselect: True 
+
+<EditData>:
+    BoxLayout:
+        orientation: 'vertical'
+        ScrollView:
+            size_hint: (1, 1)
+            do_scroll_x: True                                                      
+            do_scroll_y: True         
             RecycleView:
                 viewclass: 'SelectableButton'
                 data: [{'text': str(x)} for x in root.data_items]
@@ -38,15 +68,29 @@ Root:
                     height: self.minimum_height
                     orientation: 'vertical'
                     multiselect: True
-                    touch_multiselect: True
+                    touch_multiselect: True 
 
-<SelectableButton>:
-    canvas.before:
-        Color:
-            rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
-        Rectangle:
-            pos: self.pos
-            size: self.size
+<Help>:
+    Label:
+        text: "Load a file"
+        color: 0, 0, 0, 1   # black color text
+
+<Manager>:
+    helpScreen: helpScreen
+    loadData: loadData
+    editData : editData
+        
+    Help:
+        id: helpScreen
+        name: 'help'
+    
+    LoadData:
+        id: loadData
+        name: 'load'
+
+    EditData:
+        id: editData
+        name: 'edit'
 
 <LoadDialog>:
     BoxLayout:
@@ -65,4 +109,39 @@ Root:
 
             Button:
                 text: "Load"
-                on_release: root.load(filechooser.path, filechooser.selection)
+                on_release: 
+                    app.root.load()
+                    app.root.manager.loadData.show_data(filechooser.path, filechooser.selection)
+                    app.root.manager.editData.show_data(filechooser.path, filechooser.selection)
+                    app.root.manager.current = "load"
+
+<SelectableButton>:
+    canvas.before:
+        Color:
+            rgba: (.0, 0.9, .1, .3) if self.selected else (0, 0, 0, 1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<TextInputPopup>:
+    title: "Popup"
+    size_hint: None, None
+    size: 400, 400
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: "vertical"
+        TextInput:
+            id: txtinput
+            text: root.obj_text
+        Button:
+            size_hint: 1, 0.2
+            text: "Save Changes"
+            on_release:
+                root.obj.update_changes(txtinput.text)
+                root.dismiss()
+        Button:
+            size_hint: 1, 0.2
+            text: "Cancel Changes"
+            on_release: root.dismiss()
+
