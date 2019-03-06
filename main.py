@@ -308,6 +308,18 @@ class Menu(BoxLayout):
     def dismiss_popup(self):
         self._popup.dismiss()
 
+    def save(self, path, filename, data, size):
+        with open(os.path.join(path, filename), 'w') as stream:
+            for row in [data[i:i+size] for i in range(0, len(data), size)]:
+                stream.write(','.join([str(item) for item in row])+'\n')
+        self.dismiss_popup()
+
+    def show_save(self):
+        content = SaveDialog(save=self.save, cancel=self.dismiss_popup)
+        self._popup = Popup(title="Save file", content=content,
+                            size_hint=(0.9, 0.9))
+        self._popup.open()
+
     def show_load(self):
         content = LoadDialog(cancel=self.dismiss_popup)
         self._popup = Popup(title="Load file", content=content,
@@ -362,6 +374,10 @@ class LoadDialog(FloatLayout):
     load = ObjectProperty(None)
     cancel = ObjectProperty(None)
 
+class SaveDialog(FloatLayout):
+    save = ObjectProperty(None)
+    text_input = ObjectProperty(None)
+    cancel = ObjectProperty(None)
 
 class MainApp(App):
 
