@@ -17,13 +17,12 @@
                     on_release: root.show_load()
                 ActionButton:
                     text:'Add Data'
-                    on_release: root.manager.current = "help"
+                    on_release: root.add_data()
                 ActionButton:
                     text:'Save File'
                     on_release: root.show_save()
                 ActionButton:
                     text:'Save as png' 
-                    on_release: root.show_plot() 
             ActionGroup:
                 text: 'Edit'
                 mode: 'spinner'
@@ -183,3 +182,25 @@
                 on_release: root.save(filechooser.path, text_input.text, app.root.manager.editData.data_items, app.root.manager.editData.data_size)
 
 
+<AddData>:
+    title: "Add Data"
+    size_hint: None, None
+    auto_dismiss: False
+    size: 800, 800
+
+    BoxLayout:
+        orientation: "vertical"
+        TextInput:
+            id: txtinput
+            text: 'Enter Data'
+        Button:
+            size_hint: 1, 0.2
+            text: "Add Data"
+            on_release:
+                app.root.manager.loadData.update_data(txtinput.text)
+                app.root.manager.editData.update_data(txtinput.text)
+                root.dismiss()
+        Button:
+            size_hint: 1, 0.2
+            text: "Cancel"
+            on_release: root.dismiss()

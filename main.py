@@ -43,6 +43,10 @@ class TextInputPopup(Popup):
         self.obj = obj
         self.obj_text = obj.text
 
+
+class AddData(Popup):
+    pass
+
 class SelectableRecycleGridLayout(FocusBehavior, LayoutSelectionBehavior,
                                   RecycleGridLayout):
     ''' Adds selection and focus behaviour to the view. '''
@@ -103,6 +107,10 @@ class Menu(BoxLayout):
                             size_hint=(0.9, 0.9))
         self._popup.open()
     
+    def add_data(self):
+        popup = AddData()
+        popup.open()
+    
     def load(self):
         self.dismiss_popup()
         
@@ -124,6 +132,11 @@ class EditData(Screen):
             self.data_items.extend(data.tolist())
             self.data_size = len(data)
 
+    def update_data(self, text):
+        print(text)
+        for line in text.split('\n'):
+            self.data_items.extend(line.split(','))
+
 class LoadData(Screen):
     data_items = ListProperty([])
     data_labels = ListProperty([])
@@ -138,6 +151,10 @@ class LoadData(Screen):
             index, data = row
             self.data_items.extend(data.tolist())
             self.data_size = len(data)
+
+    def update_data(self, text):
+        for line in text.split('\n'):
+            self.data_items.extend(line.split(','))
 
 class Help(Screen):
     pass
