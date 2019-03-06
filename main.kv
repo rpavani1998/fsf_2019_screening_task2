@@ -19,6 +19,9 @@
                     text:'Add Data'
                     on_release: root.manager.current = "help"
                 ActionButton:
+                    text:'Save File'
+                    on_release: root.show_save()
+                ActionButton:
                     text:'Save as png' 
                     on_release: root.show_plot() 
             ActionGroup:
@@ -69,6 +72,7 @@
                     orientation: 'vertical'
                     multiselect: True
                     touch_multiselect: True 
+
 
 <Help>:
     Label:
@@ -144,4 +148,38 @@
             size_hint: 1, 0.2
             text: "Cancel Changes"
             on_release: root.dismiss()
+
+<SaveDialog>:
+    text_input: text_input
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+        Label:
+            text_size: self.size
+            size_hint_y: None
+            text: "Filename:"
+            multiline: False
+            width: 20
+        TextInput:
+            id: text_input
+            size_hint_y: None
+            size_hint_x: 1
+            height: 50
+            multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text, app.root.manager.editData.data_items, app.root.manager.editData.data_size)
+
 
