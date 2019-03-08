@@ -1,32 +1,48 @@
 # FOSSEE Fellowship 2019 - Python Screening Test Task 2
 
-Create an Application using PyQt/Kivy
+Create an Application using  Kivy
 
 # Task Description
 
- - User should be able to:
+- User should be able to:
 
- - Load a csv file using ‘Load’ option available under “File” menu
+- Load a csv file using ‘Load’ option available under “File” menu
 
- - Display the complete data from the loaded csv as a table
+- Display the complete data from the loaded csv as a table
 
- - Edit the existing data in the table using ‘Edit data’ option under “Edit” menu.
+- Edit the existing data in the table using ‘Edit data’ option under “Edit” menu.
 
- - Add new data to the table using ‘Add data’ option under “File” menu.
- - Select any number of columns from the displayed table
+- Add new data to the table using ‘Add data’ option under “File” menu.
 
- - Plot the data from any two selected columns should be available as buttons as mentioned below:
+- Select any number of columns from the displayed table
 
-   - Plot scatter points
+- Plot the data from any two selected columns should be available as buttons as mentioned below:
 
-   - Plot scatter points with smooth lines
+	- Plot scatter points
 
-   - Plot lines
+	- Plot scatter points with smooth lines
 
- - Click on any of the plot button. Plot should be generated accordingly in a new tab.
+	- Plot lines
 
- - Label x-axis and y-axis accordingly.
+- Click on any of the plot button. Plot should be generated accordingly in a new tab.
 
- - Add a title to the graph.
+- Label x-axis and y-axis accordingly.
 
- - Save the plot as .png file using ‘Save as png’ option under “File” menu.
+- Add a title to the graph.
+
+- Save the plot as .png file using ‘Save as png’ option under “File” menu.
+
+
+# Installation and Setup
+
+- Make sure you have Python version >= 3.5 installed
+
+- Install pip
+
+- Install required packages
+
+		pip3 install -r requirements
+
+- Run the application
+
+		python3 install main.py
