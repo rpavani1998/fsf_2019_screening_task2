@@ -35,6 +35,7 @@ from kivy_matplotlib import MatplotFigure, MatplotNavToolbar
 import matplotlib.pyplot as plt
 import numpy as np
 from kivy.garden.matplotlib import FigureCanvasKivyAgg
+from scipy.interpolate import interp1d
 import pandas as pd
 import os
 
@@ -259,8 +260,16 @@ class PlotData(Screen):
         elif plot == 'Plot scatter points with smooth lines':
             x = df[columns[0]].values
             y = df[columns[1]].values
-            plt.scatter(x, y, alpha=0.5)
-            plt.plot(np.linspace(0, 1, 10), np.power(np.linspace(0, 1, 10), 2), c= "red", marker='.', linestyle=':')
+            f = interp1d(x, y, kind='quadratic')
+            x_new = np.linspace(x.min(), x.max(),500)
+
+            f = interp1d(x, y, kind='quadratic')
+            y_smooth=f(x_new)
+
+            plt.plot (x_new,y_smooth)
+            plt.scatter (x, y)
+            # plt.scatter(x, y, alpha=0.5)
+            # plt.plot(np.linspace(0, 1, 10), np.power(np.linspace(0, 1, 10), 2), c= "red", marker='.', linestyle=':')
         elif plot == 'Plot lines':
             x = df[columns[0]].values
             y = df[columns[1]].values
