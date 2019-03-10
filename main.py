@@ -59,7 +59,10 @@ class GraphPopup(Popup):
         self.fig_name = name
         figure_wgt = self.ids['figure_wgt']  # MatplotFigure
         figure_wgt.figure = fig
-        
+
+class MessageBox(Popup):
+    pass
+       
 
 class AddData(Popup):
     pass
@@ -283,6 +286,10 @@ class PlotData(Screen):
         popup.plot(fig, plot+columns[0][:3]+columns[1][:3])
      
         self.fig = fig
+
+    def alert(self):
+        popup = MessageBox()
+        popup.open()
 
 class LoadData(Screen):
     data_items = ListProperty([])
