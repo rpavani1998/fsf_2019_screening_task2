@@ -34,7 +34,6 @@ import matplotlib as mpl
 from kivy_matplotlib import MatplotFigure, MatplotNavToolbar
 import matplotlib.pyplot as plt
 import numpy as np
-matplotlib.use("module://kivy.garden.matplotlib.backend_kivy")
 from kivy.garden.matplotlib import FigureCanvasKivyAgg
 import pandas as pd
 import os
@@ -47,9 +46,19 @@ class TextInputPopup(Popup):
 
     def __init__(self, obj, **kwargs):
         super(TextInputPopup, self).__init__(**kwargs)
-        self.obj = obj
+        self.obj = obj  
         self.obj_text = obj.text
 
+class GraphPopup(Popup):
+    fig = None
+    fig_name = '' 
+
+    def plot(self, fig, name):
+        self.fig = fig
+        self.fig_name = name
+        figure_wgt = self.ids['figure_wgt']  # MatplotFigure
+        figure_wgt.figure = fig
+        
 
 class AddData(Popup):
     pass
@@ -156,7 +165,17 @@ class Menu(BoxLayout):
                 stream.write(','.join([str(item) for item in row])+'\n')
         self.dismiss_popup()
 
+    def save_png(self, path, filename, data):
+        data.savefig(os.path.join(path, filename))
+        self.dismiss_popup()
+
     def show_save(self):
+        content = SaveDialog(save=self.save_png, cancel=self.dismiss_popup)
+        self._popup = Popup(title="Save file", content=content,
+                            size_hint=(0.9, 0.9))
+        self._popup.open()
+    
+    def show_saveplot(self):
         content = SaveDialog(save=self.save, cancel=self.dismiss_popup)
         self._popup = Popup(title="Save file", content=content,
                             size_hint=(0.9, 0.9))
@@ -178,6 +197,7 @@ class Menu(BoxLayout):
         
     def __init__(self, **kwargs):
         super(Menu, self).__init__(**kwargs)
+        self.show_load()
 
 class EditData(Screen):
     data_items = ListProperty([])
@@ -230,7 +250,7 @@ class PlotData(Screen):
         columns = [ col.strip() for col in columns.split(',')]
         df = pd.read_csv(self.file_name)
         print(df)
-        fig = mpl.figure.Figure(figsize=(2, 2))
+        fig = mpl.figure.Figure(figsize=(3, 3))
         plt = fig.gca()
         if plot == 'Plot scatter points':
             x = df[columns[0]].values
@@ -245,14 +265,15 @@ class PlotData(Screen):
             x = df[columns[0]].values
             y = df[columns[1]].values
             plt.plot(x,y)
+        plt.set_title(plot)
+        plt.set_xlabel(columns[0])
+        plt.set_ylabel(columns[1]) 
         # MatplotFigure (Kivy widget)
+        popup = GraphPopup()
+        popup.open()
+        popup.plot(fig, plot+columns[0][:3]+columns[1][:3])
+     
         self.fig = fig
-        fig_kivy = MatplotFigure(fig)
-        runTouchApp(fig_kivy)
-
-    def save_png(self):
-        self.fig.savefig('path/to/save/image/to.png') 
-
 
 class LoadData(Screen):
     data_items = ListProperty([])
@@ -273,15 +294,6 @@ class LoadData(Screen):
     def update_data(self, text):
         for line in text.split('\n'):
             self.data_items.extend(line.split(','))
-
-    
-    # def show_plot(self):
-    #     content = PlotData()
-    #     # print(self.data_items, self.data_labels, self.data_size)
-    #     content.set_data(self.data_items, self.data_labels)
-    # def change_data(self, text, index):
-    #     print(self.data_items, self.data_items[index])
-    #     self.data_items[index] = text
 
 class Help(Screen):
     pass

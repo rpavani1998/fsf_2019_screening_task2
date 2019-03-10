@@ -152,10 +152,10 @@ class _FigureCanvas(FigureCanvasAgg):
         self.widget.bt_h = h
         self.widget._draw_bitmap()
 
-    def print_figure(self, filename, *args, **kwargs):
-        super(self.print_figure, self).print_figure(filename, *args, **kwargs)
-        if self._isDrawn:
-            self.draw()
+    # def print_figure(self, filename, *args, **kwargs):
+    #     super(self.print_figure, self).print_figure(filename, *args, **kwargs)
+    #     if self._isDrawn:
+    #         self.draw()
 
 
 class MatplotNavToolbar(BoxLayout):
