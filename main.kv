@@ -16,6 +16,10 @@
                     text: 'Load'
                     on_release: root.show_load()
                 ActionButton:
+                    text: 'View Data'
+                    on_release: 
+                        app.root.manager.current = "load"
+                ActionButton:
                     text:'Add Data'
                     on_release: root.add_data()
                 ActionButton:
@@ -187,46 +191,53 @@
 
             Button:
                 text: "Save"
-                on_release: root.save(filechooser.path, text_input.text, app.root.manager.editData.data_items, app.root.manager.editData.data_size)
+                on_release: 
+                    app.root.save_png(filechooser.path, text_input.text, app.root.manager.plotData.fig) if app.root.manager.current == 'plot' else root.save(filechooser.path, text_input.text, app.root.manager.editData.data_items, app.root.manager.editData.data_size)
 
 
 <PlotData>:
     title: "Plot Data"
-    size_hint: None, None
     auto_dismiss: False
-    size: 1000, 1000
-
+    Image:
+        source: 'plot.png'
+        keep_ratio: False
+        allow_stretch: True
+        size_hint: 1, 1
     BoxLayout:
-        orientation: "horizontal"
+        orientation:"vertical"
         BoxLayout:
-            orientation: 'vertical'
+            orientation: 'horizontal'
             BoxLayout:
-
+                orientation:'vertical'
                 Label:
-                    text: 'Select Two Columns'
-                    color: 0, 0, 0, 1
-
-                RecycleView:
-                    MultiSelectSpinner:
-                        id: columns
-                        values :root.data_labels
-
+                    text: "Select two columns"
+                    color: 0, 0, 0, 1 
+                    text_size :self.size
+                MultiSelectSpinner:
+                    id: columns
+                    size_hint: 1, 0
+                    values :root.data_labels
             BoxLayout:
-
+                orientation:'vertical'
                 Label:
-                    text: 'Select Plot'
-                    color: 0, 0, 0, 1
-
+                    text: "Select a plot"
+                    color: 0, 0, 0, 1 
+                    text_size :self.size
                 MultiSelectSpinner:
                     id: plot
+                    size_hint: 1, 0
                     values: 'Plot scatter points', 'Plot scatter points with smooth lines' , 'Plot lines'
-
+        
             Button:
                 text: "Plot"
+                size_hint: 1, 0
+                text_size: self.size   
+                halign: 'center'
+                valign: 'center'  
                 on_release: 
                     root.plot(plot.text, columns.text)
-        
-     
+
+
 <MultiSelectOption@ToggleButton>:
     size_hint: 1, None
     height: '48dp'
@@ -253,4 +264,30 @@
         Button:
             size_hint: 1, 0.2
             text: "Cancel"
+            on_release: root.dismiss()
+
+<GraphPopup>:
+    title: "Plot"
+    size_hint: None, None
+    size: 1900, 1200
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation: "vertical"
+        MatplotFigure:
+            id: figure_wgt
+            size_hint: 1, 1
+        MatplotNavToolbar:
+            id: navbar_wgt
+            size_hint: 1, 0.1
+            figure_widget: figure_wgt
+        Button:
+            size_hint: 1, 0.1
+            text: "Save Plot"
+            on_release: 
+                app.root.show_saveplot()
+                root.dismiss()
+        Button:
+            size_hint: 1, 0.1
+            text: "Close"
             on_release: root.dismiss()
