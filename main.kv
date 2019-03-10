@@ -235,7 +235,8 @@
                 halign: 'center'
                 valign: 'center'  
                 on_release: 
-                    root.plot(plot.text, columns.text)
+                    root.plot(plot.text, columns.text) if (len(plot.text.split(',')) == 2 and columns.text.count(',') == 0) else root.alert()
+                        
 
 
 <MultiSelectOption@ToggleButton>:
@@ -288,6 +289,20 @@
                 app.root.show_saveplot()
                 root.dismiss()
         Button:
+            size_hint: 1, 0.1
+            text: "Close"
+            on_release: root.dismiss()
+
+<MessageBox>:
+    size_hint: .8, .4
+    title: "Alert!!"
+    auto_dismiss: False
+
+    BoxLayout:
+        orientation:"vertical"
+        Label:
+            text: "Invalid Paarmeters!!.\n 1)Select two columns \n 2) Select the type of plot"
+        Button
             size_hint: 1, 0.1
             text: "Close"
             on_release: root.dismiss()
