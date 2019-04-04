@@ -233,6 +233,10 @@ class PlotData(Screen):
     file_name = ''
     fig = None
 
+    def alert(self):
+        popup = MessageBox()
+        popup.open()
+
     def load_data(self, path, filename):
         self.file_name = filename[0]
         self.data_items.clear()
@@ -251,7 +255,12 @@ class PlotData(Screen):
 
     def plot(self, plot, columns):
         fig = None
-        columns = [ col.strip() for col in columns.split(',')]
+        print(columns, columns.count(','),plot.count(',') )
+        if columns == '' or plot == '' or columns.count(',') != 1 or plot.count(',') != 0:
+            popup = MessageBox()
+            popup.open()
+            return
+        columns = [col.strip() for col in columns.split(',')]
         df = pd.read_csv(self.file_name)
         print(df)
         fig = mpl.figure.Figure(figsize=(3, 3))
@@ -287,9 +296,6 @@ class PlotData(Screen):
      
         self.fig = fig
 
-    def alert(self):
-        popup = MessageBox()
-        popup.open()
 
 class LoadData(Screen):
     data_items = ListProperty([])
